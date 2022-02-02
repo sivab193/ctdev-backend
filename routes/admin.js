@@ -1,10 +1,87 @@
 const express = require('express');
 const router = express.Router();
+const faqModel = require('../models/faqs');
 
 router.get('/', (req, res) => {
     res.send('Hello Admin');
 });
 
+// router.get('/find', async (req, res) => {
+//     const body = req.body;
+//     const result = await faqModel.findOne({_id:body._id})
+//     res.send(result);
+// });
+
+// router.post('/createFaq',(req,res)=>{
+//     const body = req.body;
+//     const faq = new faqModel({
+//         answer: body.answer,
+//         question: body.question
+//     });
+//     faq.save((err,result) =>{
+//         if(!err) {
+//             res.send({success:true,result});
+//         }
+//         else {
+//             console.log("Error at updating" + faq);
+//             res.send({success:false});
+//         }
+//     });
+// });
+
+//Auth should be added
+router.post('/updateFaq',(req,res)=>{
+    const body = req.body;
+    if(body.faq ===null ||body.faq._id === null || body.faq._id === undefined){
+        res.send({
+            success:false,
+            msg:'faq_id is missing'
+        });
+    }else{
+        faqModel.findOne({_id: body.faq._id}, (err, faq)=> {
+            if(!err) {
+                if(!faq) {
+                    faq = new faqModel({
+                        answer: body.faq.answer,
+                        question: body.faq.question
+                    });
+                    
+                }else{
+                    faq.answer = body.faq.answer;
+                    faq.question = body.faq.question;
+                }
+                faq.save(function(err) {
+                    if(!err) {
+                        res.send({success:true});
+                    }
+                    else {
+                        console.log("Error at updating" + faq);
+                        res.send({success:false});
+                    }
+                });
+            }else{
+                console.log("Error at updating" + faq);
+                res.send({success:false});
+            }
+        });
+    }
+});
+
+//auth should be added
+router.post('/deleteFaq',async (req,res)=>{
+    const body = req.body;
+    if(body._id === null || body._id === undefined){
+        res.send({
+            success:false,
+            msg:'faq_id is missing'
+        });
+    }else{
+        await faqModel.deleteOne({_id:body._id});
+        res.send({
+            success:true
+        })
+    }
+});
 // app.get('/admin',(req,res)=>{
 //     const admin = new adminModel({
 //         username: 'admin',
