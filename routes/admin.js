@@ -4,10 +4,16 @@ const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 const adminModel = require('../models/admin');
+const auth = require('../auth/auth');
 
-router.get('/', (req, res) => {
-    res.send('Hello Admin');
-});
+// router.get('/adminTestToken', (req, res) => {
+//     const admin = auth(req,'admin');
+//     if (admin) {
+//         res.send("You are authorized to access this route.");
+//     } else {
+//         res.send("You are not authorized to access this route.");
+//     }
+// });
 
 router.post('/adminLogin',(req,res)=>{
     const {username,password} = req.body;
@@ -23,7 +29,6 @@ router.post('/adminLogin',(req,res)=>{
                 expiresIn: '1h'
             });
             res.json({
-                message:"Login Successful",
                 token:token
             });
         }
