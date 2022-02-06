@@ -1,28 +1,36 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 const router = express.Router();
+const adminModel = require('../models/admin');
 
 router.get('/', (req, res) => {
     res.send('Hello Admin');
 });
 
-// app.get('/admin',(req,res)=>{
-//     const admin = new adminModel({
-//         username: 'admin',
-//         password: 'admin'
-//     });
-//     admin.save().then(()=>{
-//         res.send('Admin Created');
-//     }).catch(()=>{
-//         res.send('Admin already exists');
-//     })
-// });
-
-// app.get('/allAdmin',(req,res)=>{
-//     adminModel.find().then(admins=>{
-//         res.send(admins);
-//     }).catch(()=>{
-//         res.send('No admins found');
-//     })
-// });
+router.post('/adminLogin',(req,res)=>{
+    const {username,password} = req.body;
+    adminModel.findOne({username:username},(err,admin)=>{
+        if(err){
+            res.send(err);
+        }
+        if(bcrypt.compareSync(password,admin.password)){
+            const token = jwt.sign({
+                username:admin.username,
+                user_role:"admin"
+            },process.env.SECRET_KEY,{
+                expiresIn: '1h'
+            });
+            res.json({
+                message:"Login Successful",
+                token:token
+            });
+        }
+        else{   
+            res.send('Invalid Username or Password');
+        }
+    })
+});
 
 module.exports = router;
