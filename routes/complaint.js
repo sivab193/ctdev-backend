@@ -3,17 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const router = express.Router();
-const adminModel = require('../models/admin');
-
-// const auth = require('../auth/auth');
-// router.get('/adminTestToken', (req, res) => {
-//     const admin = auth(req,'admin');
-//     if (admin) {
-//         res.send("You are authorized to access this route.");
-//     } else {
-//         res.send("You are not authorized to access this route.");
-//     }
-// });
+const complaintModel = require('../models/complaints');
 
 // app.get('/complaint',(req,res)=>{
 //     const complaint = new complaintModel({
@@ -34,25 +24,26 @@ const adminModel = require('../models/admin');
 //     });
 // });
 
-router.post('/adminLogin',(req,res)=>{
-    const {username,password} = req.body;
-    adminModel.findOne({username:username},(err,admin)=>{
+router.post('/fetchComplaint',(req,res)=>{
+    const {cid,password} = req.body;
+    complaintModel.findOne({cid:cid},(err,complaint)=>{
         if(err){
             res.send(err);
         }
-        if(bcrypt.compareSync(password,admin.password)){
+        if(bcrypt.compareSync(password,complaint.password)){
             const token = jwt.sign({
-                username:admin.username,
-                user_role:"admin"
+                cid:complaint.cid,
+                user_role:"student"
             },process.env.SECRET_KEY,{
                 expiresIn: '1h'
             });
             res.json({
+                complaint:complaint,
                 token:token
             });
         }
-        else{   
-            res.send('Invalid Username or Password');
+        else{
+            res.send('Invalid Complaint Id or Password');
         }
     })
 });
