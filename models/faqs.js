@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const model = mongoose.model;
 
-const adminSchema = new Schema({
+const faqSchema = new Schema({
     question: {
         type: String,
         required: true
@@ -13,6 +13,6 @@ const adminSchema = new Schema({
     }
 },{timestamps:true});
 
-const faqModel = model('faq', adminSchema);
+const faqModel = model('faq', faqSchema);
 
 module.exports = faqModel;

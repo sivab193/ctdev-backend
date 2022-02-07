@@ -6,29 +6,6 @@ router.get('/', (req, res) => {
     res.send('Hello Admin');
 });
 
-// router.get('/find', async (req, res) => {
-//     const body = req.body;
-//     const result = await faqModel.findOne({_id:body._id})
-//     res.send(result);
-// });
-
-// router.post('/createFaq',(req,res)=>{
-//     const body = req.body;
-//     const faq = new faqModel({
-//         answer: body.answer,
-//         question: body.question
-//     });
-//     faq.save((err,result) =>{
-//         if(!err) {
-//             res.send({success:true,result});
-//         }
-//         else {
-//             console.log("Error at updating" + faq);
-//             res.send({success:false});
-//         }
-//     });
-// });
-
 //Auth should be added
 router.post('/updateFaq',(req,res)=>{
     const body = req.body;
