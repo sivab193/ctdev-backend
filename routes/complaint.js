@@ -1,7 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
 const router = express.Router();
 const complaintModel = require('../models/complaints');
 
@@ -32,7 +31,7 @@ router.post('/fetchComplaint',(req,res)=>{
         }
         if(bcrypt.compareSync(password,complaint.password)){
             const token = jwt.sign({
-                cid:complaint.cid,
+                username:complaint.cid,
                 user_role:"student"
             },process.env.SECRET_KEY,{
                 expiresIn: '1h'

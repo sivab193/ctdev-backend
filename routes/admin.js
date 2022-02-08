@@ -1,10 +1,10 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
+const auth =require('../auth/auth');
 const router = express.Router();
 const adminModel = require('../models/admin');
-
+const complaintModel =require('../models/complaints');
 // const auth = require('../auth/auth');
 // router.get('/adminTestToken', (req, res) => {
 //     const admin = auth(req,'admin');
@@ -49,6 +49,7 @@ router.post('/adminLogin',(req,res)=>{
             });
             res.json({
                 token:token
+
             });
         }
         else{   
@@ -56,5 +57,39 @@ router.post('/adminLogin',(req,res)=>{
         }
     })
 });
+
+router.post('/deleteComplaint',(req,res)=>{
+    const admin =auth(req,"admin");
+    const {cid}=req.body;
+    complaintModel.deleteOne({cid :cid},(err,complaint)=>{
+        if(err){
+            res.send(err);
+        }
+        if(complaint){
+            if(complaint.deletedCount==0){
+               res.send("No records deleted");
+            }
+            else {
+                res.send("complaint deleted");
+            }
+        }
+    })
+})
+
+router.post('/resolveComplaint',(req,res)=>{
+      const admin=auth(req,"admin");
+      const {cid} =req.body;
+      complaintModel.updateOne({cid : cid},{$set: {resolved : true}},(err,complaint)=>{
+          if(err){
+              res.send(err);
+          }
+          if(complaint.modifiedCount==0){
+              res.send("No complaint to resolve");
+          }
+          else {
+              res.send("Complaint resolved");
+          }
+      })
+})
 
 module.exports = router;
