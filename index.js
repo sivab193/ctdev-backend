@@ -21,7 +21,7 @@ app.get('/',(req,res)=>{
 })
 
 app.use('/admin',adminRouter);
-app.use('/complaint', complaintRouter);
+app.use('/complaint',complaintRouter);
 
 app.listen(3000,()=>{
     console.log("Server is running!");
