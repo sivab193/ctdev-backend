@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const adminRouter = require('./routes/admin');
+const faqRouter = require('./routes/faqRouter');
+
 const db = process.env.DB_URI;
 
 const app =  express();
@@ -20,10 +22,9 @@ app.get('/',(req,res)=>{
 })
 
 app.use('/admin',adminRouter);
+app.use('/faqs', faqRouter);
 
 
 app.listen(3000,()=>{
     console.log("Server is running!");
 })
-
-
