@@ -6,24 +6,31 @@ var Faq = require('../models/faqs');
 var faqRouter = express.Router();
 faqRouter.use(bodyParser.json());
 
-
-faqRouter.get('/viewFaq/:faqId', (req, res, next) => {
+faqRouter.get('/viewFaq/:faqId', (req, res) => {
     Faq.findById(req.params.faqId)
     .then((faq) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'Application/json');
-        res.json(faq);
-    }, err => next(err))
-    .catch((err) => next(err))
+        res.send({ success: true,
+                   faqs: faq });
+    })
+    .catch((err) => {
+        console.log(err);
+        res.send({ success: false });
+    })
 })
 
-faqRouter.post('/postFaq', (req, res, next) => {
+faqRouter.post('/postFaq', (req, res) => {
+    if(!req.body || !req.body.faq)
+        res.send({ success: false });
+
     Faq.create(req.body.faq)
     .then((faq) => {
-        res.statusCode = 200;
-        res.send({statusMessage: "Successfully posted faq"});
-    }, err => next(err))
-    .catch((err) => next(err))
+        res.send({ success: true,
+                   msg: "Successfully posted faq" });
+    })
+    .catch((err) => {
+        console.log(err);
+        res.send({ success: false });
+    })
 })
 
 module.exports = faqRouter;
